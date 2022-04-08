@@ -1,5 +1,6 @@
 const {MessageActionRow, MessageButton} = require('discord.js');
 const config = require('../config.json');
+const { Modal, TextInputComponent, showModal } = require('discord-modals');
 
 module.exports = async function messageCreate(message) {
     if (message.author.id === '639544573114187797') {
@@ -7,18 +8,8 @@ module.exports = async function messageCreate(message) {
         //else if (message.content.startsWith('!eval')) await runEvalCommand()
     }
     if (message.member.roles.cache.some(role => role.id === config.roles.owner)) {
-        if (message.content.startsWith('!eval send')) await sendInput(message)
+        if (message.content.startsWith('!eval send')) await sendInput(message.client)
     }
-}
-
-async function sendInput(message) {
-    await message.channel.send({
-        //content: '@everyone',
-        embeds: [{
-            color: '5865F2',
-            description: message.content.substring("!eval send".length),
-        }]
-    })
 }
 
 function createActionRowOf(items) {

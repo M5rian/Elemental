@@ -1,13 +1,15 @@
 const config = require('../config.json')
 const {Permissions} = require('discord.js');
 
-module.exports = async function interactionCreate(interaction) {
-    if (!interaction.isCommand()) return;
-    if (interaction.commandName !== 'ticket') return
+module.exports = {
+    interactionCreate: async (interaction) => {
+        if (!interaction.isCommand()) return;
+        if (interaction.commandName !== 'ticket') return
 
-    const subcommand = interaction.options._subcommand;
-    if (subcommand === 'create') await onCreate(interaction);
-    else if (subcommand === 'close') await onClose(interaction);
+        const subcommand = interaction.options._subcommand;
+        if (subcommand === 'create') await onCreate(interaction);
+        else if (subcommand === 'close') await onClose(interaction);
+    }
 }
 
 async function onCreate(interaction) {
@@ -52,5 +54,5 @@ async function onClose(interaction) {
         }
     }
 
-    await interaction.reply("Closed ticket ✔️")
+    await interaction.reply('Closed ticket ✔️')
 }

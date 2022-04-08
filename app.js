@@ -2,34 +2,21 @@ const config = require('./config.json');
 const {Client, Intents} = require('discord.js');
 const fs = require('fs');
 const fetch = require('node-fetch')
+const discordModals = require("discord-modals")
 
 const client = new Client({intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_VOICE_STATES, Intents.FLAGS.GUILD_MEMBERS]});
+discordModals(client)
 const events = fs.readdirSync('listeners').filter(f => f.endsWith('.js')).map(f => `./listeners/${f}`);
 const commands = fs.readdirSync('commands').filter(f => f.endsWith('.js')).map(f => `./commands/${f}`);
 
 // Event handling
 [...events, ...commands].forEach(async (path) => {
-    const event = await require(path);
-    if (event.name !== undefined) {
-        try {
-            client.on(event.name, (...args) => event(...args))
-        } catch (e) {
-            console.log("error object:");
-            console.log(e);
-            console.log();
-
-            console.log("error object toString():");
-            console.log("\t" + e.toString());
-
-            console.log();
-            console.log("error object attributes: ");
-            console.log('\tname: ' + e.name + ' message: ' + e.message + ' at: ' + e.at + ' text: ' + e.text);
-
-            console.log();
-            console.log("error object stack: ");
-            console.log(e.stack);
-        }
-    }
+    const events = await require(path);
+    Object.keys(events).forEach(event => {
+        console.log(event)
+        const fn = events[event]
+        client.on(event, (...args) => fn(...args))
+    })
 });
 
 client.on('ready', async () => {

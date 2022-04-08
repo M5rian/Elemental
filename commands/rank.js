@@ -1,10 +1,9 @@
 const config = require('../config.json')
 
-module.exports = async function interactionCreate(interaction) {
-
-    if (interaction.isCommand()) onCommand(interaction)
-
-
+module.exports = {
+    interactionCreate: async (interaction) => {
+        if (interaction.isCommand() && interaction.commandName === 'rank') onCommand(interaction)
+    }
 }
 
 async function onCommand(interaction) {
